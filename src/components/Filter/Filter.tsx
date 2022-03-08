@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 // Interfaces
-import { Category, TodoAddInterface, Status, StatusGetProps } from '../App/App';
+import { Category, Status, StatusGetProps } from '../../utils/types';
 
 // TypeScript currentTarget icindeki elements'i tanimadigi
 // icin elements'i tanimlayan bir interface olusturuldu
@@ -25,9 +25,9 @@ interface UserFormElements extends HTMLFormElement {
 
 // Props
 interface TodoProps {
-	onSubmit: (action: boolean, categoryId?: number, statusId?: number) => void;
+	onSubmit: (categoryId: number, statusId: number) => void;
 	categoryList: Category[];
-	onCategoryChange: ({ apiToken, categoryId }: StatusGetProps) => any;
+	onCategoryChange: ({ categoryId }: StatusGetProps) => any;
 }
 
 function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
@@ -60,7 +60,7 @@ function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
 		event.preventDefault();
 
 		// Onsubmit ile filter degerleri gonderiliyor
-		onSubmit(true, parseInt(categorySelect), parseInt(statusSelect));
+		onSubmit(parseInt(categorySelect), parseInt(statusSelect));
 	}
 
 	function handleClear(
@@ -70,7 +70,7 @@ function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
 		event.stopPropagation();
 
 		// Onsubmit ile filter temizleniyor
-		onSubmit(false);
+		onSubmit(0, 0);
 
 		// Filter Select elemanlari temizleniyor.
 		setCategorySelect('');
@@ -78,9 +78,9 @@ function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
 	}
 
 	return (
-		<Box component="div" sx={{ width: '100%', mt: 10, mb: 10 }}>
-			<Typography variant="h2" gutterBottom component="h1">
-				Filtrele (CALISMIYOR)
+		<Box component="div" sx={{ width: '100%', mb: 2 }}>
+			<Typography component="h2" fontSize="1.6rem" gutterBottom>
+				Todo Listesi
 			</Typography>
 			<Box
 				component="form"
@@ -94,7 +94,15 @@ function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
 				autoComplete="off"
 				onSubmit={handleSubmit}
 			>
-				<FormControl required sx={{ m: 1, minWidth: 120 }}>
+				<Typography
+					sx={{ width: '10ch', mr: 1 }}
+					component="h3"
+					fontSize="1.2rem"
+					gutterBottom
+				>
+					Filtrele
+				</Typography>
+				<FormControl sx={{ width: '33ch', mr: 1 }}>
 					<InputLabel id="demo-simple-select-label">Kategori</InputLabel>
 					<Select
 						labelId="demo-simple-select-label"
@@ -111,7 +119,7 @@ function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
 							))}
 					</Select>
 				</FormControl>
-				<FormControl required sx={{ m: 1, minWidth: 120 }}>
+				<FormControl sx={{ width: '33ch', mr: 1 }}>
 					<InputLabel id="demo-simple-select-label">Statu</InputLabel>
 					<Select
 						labelId="demo-simple-select-label"
@@ -128,15 +136,10 @@ function Filter({ onSubmit, categoryList, onCategoryChange }: TodoProps) {
 							))}
 					</Select>
 				</FormControl>
-				<Button sx={{ ml: 1, mr: 1 }} type="submit" variant="contained">
+				<Button sx={{ mr: 1 }} type="submit" variant="contained">
 					Filtrele
 				</Button>
-				<Button
-					sx={{ ml: 1, mr: 1 }}
-					type="button"
-					variant="contained"
-					onClick={handleClear}
-				>
+				<Button type="button" variant="outlined" onClick={handleClear}>
 					Filtreyi Sil
 				</Button>
 			</Box>
